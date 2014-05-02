@@ -5,6 +5,67 @@
     <title>To Do Map</title>
 </head>
 <body>
-Welcome to To Do Map
+    <canvas id="map" style="z-index:1;border:1px solid #c3c3c3;">
+        你的浏览器版本过低！
+    </canvas>
+
+    <script type="text/javascript">
+        function node(text, children) {
+            this.text = text;
+            this.children = children;
+            this.isRoot = false;
+            this.display = function(x, y) {
+                if (!this.isRoot) {
+                    cxt.lineTo(x, y);
+                    cxt.stroke();
+                }
+                cxt.fillText(this.text, x - 11 * this.text.length / 2, y + 5);
+                for(var idx = 0; idx < this.children.length; idx++) {
+                    cxt.moveTo(x, y);
+                    this.children[idx].display(x - (2 - (idx + 1) % this.children.length) * (idx - 1) * 100 , y - (2 - idx % this.children.length) * (idx) * 140);
+                }
+            };
+        }
+
+        var width = window.innerWidth;
+        var height = window.innerHeight;
+        var cx = width / 2;
+        var cy = height / 2;
+        var map = document.getElementById("map");
+        map.width = width;
+        map.height = height;
+
+        var cxt = map.getContext("2d");
+        cxt.font = "20px Georgia";
+        cxt.globalAlpha = 0.6;
+
+        var list = document.createElement('textarea');
+
+        var n = new node('to do map', [
+            new node('hello1', [])
+            ,new node('haha2', [])
+            ,new node('haha3', [])
+        ]);
+        n.isRoot = true;
+        n.display(cx, cy, 0);
+
+        initList();
+
+        function initList() {
+            list.id = 'text';
+            list.style.zIndex = 2;
+            list.style.position = 'absolute';
+            list.style.top = map.offsetTop - 1 + 'px';
+            list.style.left = map.offsetLeft - 1 + 'px';
+            list.style.color = 'black';
+            list.style.backgroundColor = 'transparent';
+            list.style.opacity = 0.3;
+            list.rows = 24;
+            list.cols = 170;
+
+            document.getElementsByTagName('body')[0].appendChild(list);
+        }
+
+    </script>
 </body>
 </html>
